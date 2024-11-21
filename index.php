@@ -1,8 +1,7 @@
 <?php
 function decimalToBinary($decimal)
 {
-    // Khởi tạo Stack (sử dụng mảng)
-
+    // dùng mảng duyệt liên tục để chia lấy dư, lưu vào stack rồi dùng array_pop lấy phần tử đầu trong stack để đảo ngược stach vưua lưu
     while ($decimal > 0) {
         $remainder = $decimal % 2;
         array_push($stack, $remainder);
