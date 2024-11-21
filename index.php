@@ -1,25 +1,38 @@
 <?php
-function decimalToBinary($decimal)
+
+function checkBrackets($expression)
 {
-    // Khởi tạo Stack (sử dụng mảng)
+    $stack = new SplStack();
 
-    while ($decimal > 0) {
-        $remainder = $decimal % 2;
-        array_push($stack, $remainder);
+    for ($i = 0; $i < strlen($expression); $i++) {
+        $sym = $expression[$i];
 
-        $decimal = floor($decimal / 2);
+        if ($sym == '(') {
+            $stack->push($sym);
+        } elseif ($sym == ')') {
+            if ($stack->isEmpty()) {
+                return false;
+            }
+            $left = $stack->pop();
+            if ($left != '(') {
+                return false;
+            }
+        }
     }
 
-    $binary = "";
-    while (!empty($stack)) {
-        $binary .= array_pop($stack);
-    }
-
-    return $binary;
+    return $stack->isEmpty();
 }
 
-$decimal = 111;
-$binary = decimalToBinary($decimal);
+$expressions = [
+    's * (s – a) * (s – b) * (s – c)',
+    '(– b + (b2 – 4*a*c)^0.5) / 2*a',
+    's * (s – a) * (s – b * (s – c)',
+    's * (s – a) * s – b) * (s – c)',
+    '(– b + (b^2 – 4*a*c)^(0.5/ 2*a))'
+];
 
-
-echo "convert " . $decimal . " to binary is : " . $binary;
+foreach ($expressions as $expr) {
+    echo "Biểu thức: $expr\n";
+    echo "Kết quả: " . (checkBrackets($expr) ? 'Đúng' : 'Sai') . "\n\n";
+    echo "<br/>";
+}
