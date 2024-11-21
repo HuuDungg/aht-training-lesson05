@@ -1,38 +1,49 @@
 <?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $phoneNumbers = $_POST['phones'];
 
-function checkBrackets($expression)
-{
-    $stack = new SplStack();
+    $phoneArray = explode(",", $phoneNumbers);
 
-    for ($i = 0; $i < strlen($expression); $i++) {
-        $sym = $expression[$i];
+    $viettel = [];
+    $mobifone = [];
+    $vinaphone = [];
 
-        if ($sym == '(') {
-            $stack->push($sym);
-        } elseif ($sym == ')') {
-            if ($stack->isEmpty()) {
-                return false;
-            }
-            $left = $stack->pop();
-            if ($left != '(') {
-                return false;
-            }
+    foreach ($phoneArray as $phone) {
+        $phone = trim($phone);
+
+        if (preg_match("/^09/", $phone)) {
+            $viettel[] = $phone;
+        } elseif (preg_match("/^02/", $phone)) {
+            $vinaphone[] = $phone;
+        } elseif (preg_match("/^05/", $phone)) {
+            $mobifone[] = $phone;
         }
     }
 
-    return $stack->isEmpty();
+    echo "<h3>Số điện thoại của Viettel:</h3>";
+    echo !empty($viettel) ? implode("<br>", $viettel) : "Không có số điện thoại Viettel.";
+    echo "<h3>Số điện thoại của Mobifone:</h3>";
+    echo !empty($mobifone) ? implode("<br>", $mobifone) : "Không có số điện thoại Mobifone.";
+    echo "<h3>Số điện thoại của Vinaphone:</h3>";
+    echo !empty($vinaphone) ? implode("<br>", $vinaphone) : "Không có số điện thoại Vinaphone.";
 }
+?>
 
-$expressions = [
-    's * (s – a) * (s – b) * (s – c)',
-    '(– b + (b2 – 4*a*c)^0.5) / 2*a',
-    's * (s – a) * (s – b * (s – c)',
-    's * (s – a) * s – b) * (s – c)',
-    '(– b + (b^2 – 4*a*c)^(0.5/ 2*a))'
-];
+<!DOCTYPE html>
+<html lang="en">
 
-foreach ($expressions as $expr) {
-    echo "Biểu thức: $expr\n";
-    echo "Kết quả: " . (checkBrackets($expr) ? 'Đúng' : 'Sai') . "\n\n";
-    echo "<br/>";
-}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân loại số điện thoại</title>
+</head>
+
+<body>
+    <h2>Phân loại số điện thoại</h2>
+    <form method="POST">
+        <textarea name="phones" rows="4" cols="50" placeholder="Nhập số điện thoại cách nhau bởi dấu phẩy..."></textarea><br><br>
+        <input type="submit" value="Phân loại">
+    </form>
+</body>
+
+</html>
